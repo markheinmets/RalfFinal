@@ -58,7 +58,7 @@ onMounted(() => {
             },
         })
         .setLngLat([-73.99055, 40.735225])
-        .addTo(map.value);
+        .addTo(map);
 });
 </script>
 

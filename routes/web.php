@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,8 @@ Route::get('dashboard', DashboardController::class)
     ->name('dashboard');
 
 Route::resource('posts', PostController::class);
+
+Route::post('/comment/{post}', [CommentController::class, 'store'])->name('comments.store');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

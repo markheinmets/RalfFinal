@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
-class PostController extends Controller
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('post/Index');
+        //
     }
 
     /**
@@ -21,45 +21,37 @@ class PostController extends Controller
      */
     public function create()
     {
-        return Inertia::render('post/Create');
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Post $post, Request $request)
     {
-        Post::create($request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
-        ]));
-
-        return redirect()->to(route('posts.index'));
-
+        dd($post, $request);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(Comment $comment)
     {
-        return Inertia::render('post/Show', [
-            'post' => $post
-        ]);
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Post $post)
+    public function edit(Comment $comment)
     {
-        return Inertia::render('post/Edit');
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, Comment $comment)
     {
         //
     }
@@ -67,7 +59,7 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy(Comment $comment)
     {
         //
     }
