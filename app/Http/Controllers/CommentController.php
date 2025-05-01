@@ -29,7 +29,9 @@ class CommentController extends Controller
      */
     public function store(Post $post, Request $request)
     {
-        dd($post, $request);
+        $post->comments()->create($request->validate([
+            'comment' => 'required',
+        ]));
     }
 
     /**
@@ -61,6 +63,11 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        if (auth()->user()?->is_admin) {
+            $comment->delete();
+        }
+
+        return back();
     }
+
 }
