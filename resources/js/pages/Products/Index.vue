@@ -1,49 +1,82 @@
 <script setup lang="ts">
 import Button from '@/components/ui/button/Button.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { usePage } from '@inertiajs/vue3';
-import { CartItem } from '@/types';
-import { useForm } from '@inertiajs/vue3';
+import { Link as InertiaLink } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import axios from 'axios';
 
-const page = usePage();
-const products = defineProps<{ products: any[] }>();  // Prop for the products passed from controller
+const props = defineProps<{ products: any[]; cart?: Record<number, any> }>();
 
-const cartForm = useForm({
-    product_id: null,
-    quantity: 1,
-});
+const quantities = ref<{ [key: number]: number }>({});
 
-const addToCart = (productId: number) => {
-    cartForm.product_id = productId;
-    cartForm.quantity = 1; // Default quantity is 1
-    cartForm.post(route('cart.add', { productId }), {
-        preserveScroll: true,
-        onSuccess: () => {
-            // Optionally display a success message or update UI
-        },
-    });
+const addToCart = async (productId: number) => {
+    const quantity = quantities.value[productId] || 1;
+
+    try {
+        const response = await axios.post(route('cart.add', { productId }), {
+            quantity,
+        });
+
+        // Optional: update cart state dynamically if needed
+        console.log('Added to cart:', response.data.cart);
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+    }
 };
+
+const totalPrice = computed(() => {
+    if (!props.cart) return 0;
+    return Object.values(props.cart).reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+});
 </script>
 
 <template>
     <AppLayout>
-        <div class="mx-auto my-12 w-full max-w-4xl">
-            <h1 class="text-3xl font-semibold tracking-wide">E-Store</h1>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                <div v-for="product in products" :key="product.id" class="border rounded-lg p-4 shadow-sm">
-                    <img :src="product.image" alt="Product Image" class="w-full h-48 object-cover rounded-t-lg" />
-                    <div class="mt-4">
-                        <h2 class="text-xl font-semibold">{{ product.name }}</h2>
-                        <p class="text-gray-600 mt-2">{{ product.description }}</p>
-                        <p class="mt-4 text-xl font-medium text-gray-900">${{ product.price }}</p>
+        <div class="mx-auto my-12 w-full max-w-6xl px-4">
+            <div class="mb-6 flex items-center justify-between">
+                <h1 class="text-3xl font-bold">E-Store</h1>
 
-                        <Button class="mt-4 w-full" @click="addToCart(product.id)">
-                            Add to Cart
-                        </Button>
+                <InertiaLink :href="route('cart.index')">
+                    <Button variant="outline">View Cart</Button>
+                </InertiaLink>
+            </div>
+
+            <div v-if="props.cart && Object.keys(props.cart).length > 0" class="mb-6 text-right text-lg text-gray-700">
+                Cart Total: €{{ totalPrice.toFixed(2) }}
+            </div>
+
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                <div
+                    v-for="product in props.products"
+                    :key="product.id"
+                    class="flex flex-col rounded-xl border bg-white p-4 shadow-sm"
+                >
+                    <div class="relative h-48 w-full overflow-hidden rounded">
+                        <img :src="product.image" alt="Product Image" class="product-image h-full w-full object-cover" />
                     </div>
+
+                    <h2 class="mt-4 text-lg font-semibold">{{ product.name }}</h2>
+                    <p class="mt-1 text-sm text-gray-600">{{ product.description }}</p>
+                    <p class="mt-2 text-base font-medium text-gray-900">€{{ product.price }}</p>
+
+                    <input
+                        type="number"
+                        min="1"
+                        v-model.number="quantities[product.id]"
+                        placeholder="Quantity"
+                        class="mt-3 w-full rounded border px-3 py-2 text-sm"
+                    />
+
+                    <Button class="mt-4" @click="addToCart(product.id)">Add to Cart</Button>
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+.product-image {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+</style>

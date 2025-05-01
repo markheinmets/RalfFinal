@@ -30,9 +30,10 @@ Route::resource('markers', MarkerController::class);
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 // Cart Routes
+
 Route::post('/cart/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
-Route::patch('/cart', [CartController::class, 'updateCart'])->name('cart.update');
-Route::delete('/cart/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('/cart/update/{productId}', [CartController::class, 'updateCart'])->name('cart.update');
+Route::delete('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
 // Checkout Routes

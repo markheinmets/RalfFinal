@@ -4,46 +4,44 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Inertia\Inertia;
 
 class CartController extends Controller
 {
     // Add product to the cart
-    public function addToCart($productId)
+    public function addToCart(Request $request, $productId)
     {
         $product = Product::findOrFail($productId);
         $cart = session()->get('cart', []);
 
         if (isset($cart[$productId])) {
-            $cart[$productId]['quantity']++;
+            $cart[$productId]['quantity'] += $request->input('quantity', 1);
         } else {
             $cart[$productId] = [
                 'name' => $product->name,
                 'price' => $product->price,
-                'quantity' => 1,
-                'image' => $product->image, // Assuming the product has an image column
+                'quantity' => $request->input('quantity', 1),
+                'image' => $product->image,
+                'description' => $product->description,
             ];
         }
 
         session()->put('cart', $cart);
 
-        return redirect()->route('cart.index');
+        return response()->json(['message' => 'Added to cart', 'cart' => $cart]);
     }
 
-    // Update the quantity of a product in the cart
+    // Update cart quantity
     public function updateCart(Request $request)
     {
         $cart = session()->get('cart');
-
-        if ($request->has('quantity')) {
-            $cart[$request->product_id]['quantity'] = $request->quantity;
-        }
-
+        $cart[$request->productId]['quantity'] = $request->quantity;
         session()->put('cart', $cart);
 
-        return redirect()->route('cart.index');
+        return response()->json(['cart' => $cart]);
     }
 
-    // Remove product from the cart
+    // Remove product from cart
     public function removeFromCart($productId)
     {
         $cart = session()->get('cart');
@@ -54,15 +52,18 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
-        return redirect()->route('cart.index');
+        return Inertia::render('Cart/Index', [
+        'cart' => $cart,  // Pass the updated cart to the Inertia view
+    ]);
     }
 
-    // View cart
+    // Display cart
     public function index()
     {
-        $cart = session()->get('cart');
-        return inertia('Cart/Index', [
-            'cart' => $cart
+        $cart = session()->get('cart', []);
+        return Inertia::render('Cart/Index', [
+            'cart' => $cart,
         ]);
     }
 }
+
