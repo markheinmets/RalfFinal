@@ -15,7 +15,7 @@ class CheckoutController extends Controller
     {
         // Here, you would integrate a payment gateway, e.g., Stripe or PayPal
         // For now, let's assume the payment is successful:
-        $paymentSuccessful = true;
+        $paymentSuccessful = rand(0, 1) === 1;
 
         if ($paymentSuccessful) {
             session()->forget('cart'); // Clear the cart after successful payment

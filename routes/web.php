@@ -4,6 +4,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FavoriteSubjectController;
 use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
@@ -41,6 +42,9 @@ Route::get('/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('
 Route::post('/checkout', [CheckoutController::class, 'processPayment'])->name('checkout.process');
 Route::get('/checkout/success', [CheckoutController::class, 'paymentSuccess'])->name('payment.success');
 Route::get('/checkout/failed', [CheckoutController::class, 'paymentFailed'])->name('payment.failed');
+
+Route::get('/subjects', [FavoriteSubjectController::class, 'index'])->name('subjects.index');
+Route::post('/subjects', [FavoriteSubjectController::class, 'store'])->name('subjects.store');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

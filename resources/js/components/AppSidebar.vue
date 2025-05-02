@@ -24,6 +24,11 @@ const mainNavItems: NavItem[] = [
         href: '/products',  
         icon: ShoppingCart, 
     },
+    {
+        title: 'Favorite Subjects',
+        href: '/subjects',  
+        icon: BookOpen, 
+    },
 ];
 
 const footerNavItems: NavItem[] = [
