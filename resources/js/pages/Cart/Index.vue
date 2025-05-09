@@ -6,7 +6,7 @@ import { computed } from 'vue';
 
 const props = defineProps<{
     cart: Record<number, any>;
-    products: any[];
+    products: any[]; // products for cart
 }>();
 
 const form = useForm({

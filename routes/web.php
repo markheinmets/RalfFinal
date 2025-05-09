@@ -15,7 +15,6 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-
 Route::get('dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -31,7 +30,6 @@ Route::resource('markers', MarkerController::class);
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 // Cart Routes
-
 Route::post('/cart/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
 Route::post('/cart/update/{productId}', [CartController::class, 'updateCart'])->name('cart.update');
 Route::delete('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
@@ -45,6 +43,7 @@ Route::get('/checkout/failed', [CheckoutController::class, 'paymentFailed'])->na
 
 Route::get('/subjects', [FavoriteSubjectController::class, 'index'])->name('subjects.index');
 Route::post('/subjects', [FavoriteSubjectController::class, 'store'])->name('subjects.store');
+Route::get('/api/subjects', [FavoriteSubjectController::class, 'api'])->name('subjects.api');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

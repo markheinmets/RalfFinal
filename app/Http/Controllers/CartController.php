@@ -53,8 +53,8 @@ class CartController extends Controller
         session()->put('cart', $cart);
 
         return Inertia::render('Cart/Index', [
-        'cart' => $cart,  // Pass the updated cart to the Inertia view
-    ]);
+            'cart' => $cart,  // Pass the updated cart to the Inertia view
+        ]);
     }
 
     // Display cart
@@ -66,4 +66,3 @@ class CartController extends Controller
         ]);
     }
 }
-
