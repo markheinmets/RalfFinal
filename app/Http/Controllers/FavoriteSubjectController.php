@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MyFavoriteSubject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 class FavoriteSubjectController extends Controller
 {
@@ -38,9 +39,12 @@ class FavoriteSubjectController extends Controller
 
     public function index()
     {
+        $response = Http::get('https://hajus.tak23mand.itmajakas.ee/api/favourite/07b4cc44-9042-4944-b1dc-56eac757ca4f');
+
         $subjects = MyFavoriteSubject::latest()->get();
         return inertia('Subjects/Index', [
             'subjects' => $subjects,
+            'apiData' => $response->json(),
         ]);
     }
 }
