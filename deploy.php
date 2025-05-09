@@ -19,7 +19,17 @@ host('ta23heinmets.itmajakas.ee')
     ->set('identity_file', '~/.ssh/id_rsa_zone')
     ->set('deploy_path', '~/domeenid/www.ta23heinmets.itmajakas.ee/hajus-ta-23');
 
+// Tasks
+
+desc('Build frontend assets');
+task('build:assets', function () {
+    within('{{release_path}}', function () {
+        run('npm ci');
+        run('npm run build');
+    });
+});
 
 // Hooks
 
+after('deploy:vendors', 'build:assets');
 after('deploy:failed', 'deploy:unlock');
